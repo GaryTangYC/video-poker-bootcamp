@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /** ***********************
  **** Global variable *****
  ************************** */
@@ -13,18 +14,27 @@ let cardWinMessage = '';
 let displayMessage;
 let winAmount;
 let gameState = 'betMode';
-let totalPoints = 5;
+let totalPoints = 100;
 // Variables for CSS
 const cardContainer = ['', '', '', '', ''];
 const holdButton = ['', '', '', '', ''];
+
 /** ***********************
  **** Generate deck *****
  ************************** */
 
-// Get a random index ranging from 0 (inclusive) to max (exclusive).
+/**
+ *
+ * @param {number} max
+ * @returns A random index ranging from 0 (inclusive) to max (exclusive).
+ */
 const getRandomIndex = (max) => Math.floor(Math.random() * max);
 
-// Shuffle an array of cards
+/**
+ * Shuffle an array of cards
+ * @param {*} cards
+ * @returns shuffled deck
+ */
 const shuffleCards = (cards) => {
   // Loop over the card deck array once
   for (let currentIndex = 0; currentIndex < cards.length; currentIndex += 1) {
@@ -38,10 +48,13 @@ const shuffleCards = (cards) => {
     cards[currentIndex] = randomCard;
     cards[randomIndex] = currentCard;
   }
-  // Return the shuffled deck
   return cards;
 };
 
+/**
+ * Create a Deck of Cards
+ * @returns deck of cards
+ */
 const makeDeck = () => {
   // Initialise an empty deck array
   const newDeck = [];
@@ -86,6 +99,9 @@ const makeDeck = () => {
   return newDeck;
 };
 
+/**
+ * Generate game elements to HTML
+ */
 const createGameBoard = () => {
   // Generate gameboard for CSS
   const gameBoard = document.createElement('div');
@@ -98,10 +114,20 @@ const createGameBoard = () => {
   displayPayout.classList.add('child1');
   gameBoard.appendChild(displayPayout);
 
+  // Generate div to manipulate image CSS
+  const displayDiv = document.createElement('div');
+  displayDiv.classList.add('displayDiv');
+  displayPayout.appendChild(displayDiv);
+
+  // Generate headings for payout table
+  const generateHead = document.createElement('h2');
+  generateHead.innerHTML = 'Payout Rates';
+  displayDiv.appendChild(generateHead);
+
   // Generate display payout image
   const payoutImage = document.createElement('img');
   payoutImage.src = 'images/payout1.png';
-  displayPayout.appendChild(payoutImage);
+  displayDiv.appendChild(payoutImage);
 
   // Generate center Display container
   const centerDisplay = document.createElement('div');
@@ -115,7 +141,7 @@ const createGameBoard = () => {
 
   // Generate bet container
   const betContainer = document.createElement('div');
-  betContainer.classList.add('displayBox');
+  betContainer.classList.add('betTitleBox');
   betContainer.innerHTML = 'Bet Station';
   playerUI.appendChild(betContainer);
 
@@ -123,16 +149,21 @@ const createGameBoard = () => {
   const createdisplayMessage = document.createElement('div');
   createdisplayMessage.classList.add('displayBox');
   createdisplayMessage.setAttribute('id', 'messageBox');
-  createdisplayMessage.innerHTML = 'Place your bets on the Bet Station to begin.';
   playerUI.appendChild(createdisplayMessage);
+
+  // Create a p element under displaybox for text
+  const displayMessagep = document.createElement('p');
+  displayMessagep.innerHTML = `Place your bets on the Bet 
+  Station to begin.`;
+  createdisplayMessage.appendChild(displayMessagep);
   displayMessage = document.getElementById('messageBox');
 
   // Generate credit container
   const creditContainer = document.createElement('div');
-  creditContainer.classList.add('displayBox');
+  creditContainer.classList.add('creditBox');
   creditContainer.setAttribute('id', 'total-credit');
   creditContainer.innerHTML = `Remaining points:${totalPoints}`;
-  playerUI.appendChild(creditContainer);
+  betContainer.appendChild(creditContainer);
   displayCredit = document.getElementById('total-credit');
 
   // Generate card layout container
@@ -155,8 +186,10 @@ const createGameBoard = () => {
     cardContainer[i] = document.createElement('img');
     cardContainer[i].setAttribute('id', `card${[i]}`);
     cardContainer[i].classList.add('card');
+    cardContainer[i].src = 'cards/BLUE_BACK.svg';
     cardLayout.appendChild(cardContainer[i]);
   }
+
   // Generate swap button for card selection in gameplay
   for (let i = 0; i < holdButton.length; i += 1) {
     holdButton[i] = document.createElement('button');
@@ -175,12 +208,12 @@ const createGameBoard = () => {
 
   // Create bet dropdown selection to select bet
   const betSelection = [0, 1, 2, 3, 4, 5];
-  let betDropDownContainer;
-  betDropDownContainer = document.createElement('select');
+  const betDropDownContainer = document.createElement('select');
   betDropDownContainer.setAttribute('id', 'dropdown');
   betContainer.appendChild(betDropDownContainer);
   for (let i = 0; i < betSelection.length; i += 1) {
     const betOption = document.createElement('option');
+    betOption.setAttribute('id', 'option');
     betOption.value = betSelection[i];
     betOption.text = betSelection[i];
     betDropDownContainer.appendChild(betOption);
@@ -196,7 +229,22 @@ const createGameBoard = () => {
 
 /** ***********************
  **** helper function*****
- ************************** */
+ ************************ */
+// Coin Sounds
+const playCoinSounds = () => {
+  document.getElementById('coin_audio').play();
+}
+
+// Win Sounds
+const playWinSounds = () => {
+  document.getElementById('win_audio').play();
+}
+
+// Coin Sounds
+const playLossSounds = () => {
+  document.getElementById('loss_audio').play();
+}
+
 // Generate 5 cards from deck as playerCards
 const generatePlayerCards = () => {
   for (let i = 0; i < 5; i += 1) {
@@ -204,7 +252,10 @@ const generatePlayerCards = () => {
   }
 };
 
-// Generate card image based on playerHands
+/**
+ * Generate card image based on playercards
+ * @param {array} playerHand - cards in player hand
+ */
 const pushCardImage = (playerHand) => {
   const card0 = document.getElementById('card0');
   const card1 = document.getElementById('card1');
@@ -240,41 +291,46 @@ const replaceCard4 = () => {
   playerCards.splice(4, 1, deck.pop());
 };
 
-// Add button functionality on click to swap card and can be click only once
+// Add button functionality on click to swap card and can be click only once. Change the image to hide swap card.
 
 const swapCard0 = () => {
   document.getElementById('button0').innerHTML = '💸';
   document.getElementById('button0').disabled = true;
   replaceCard0();
-  pushCardImage(playerCards);
+  const card0 = document.getElementById('card0');
+  card0.src = 'cards/BLUE_BACK.svg';
 };
 
 const swapCard1 = () => {
   document.getElementById('button1').innerHTML = '💸';
   document.getElementById('button1').disabled = true;
   replaceCard1();
-  pushCardImage(playerCards);
+  const card1 = document.getElementById('card1');
+  card1.src = 'cards/BLUE_BACK.svg';
 };
 
 const swapCard2 = () => {
   document.getElementById('button2').innerHTML = '💸';
   document.getElementById('button2').disabled = true;
   replaceCard2();
-  pushCardImage(playerCards);
+  const card2 = document.getElementById('card2');
+  card2.src = 'cards/BLUE_BACK.svg';
 };
 
 const swapCard3 = () => {
   document.getElementById('button3').innerHTML = '💸';
   document.getElementById('button3').disabled = true;
   replaceCard3();
-  pushCardImage(playerCards);
+  const card3 = document.getElementById('card3');
+  card3.src = 'cards/BLUE_BACK.svg';
 };
 
 const swapCard4 = () => {
   document.getElementById('button4').innerHTML = '💸';
   document.getElementById('button4').disabled = true;
   replaceCard4();
-  pushCardImage(playerCards);
+  const card4 = document.getElementById('card4');
+  card4.src = 'cards/BLUE_BACK.svg';
 };
 
 // Store all swap button functionality for ease of call
@@ -286,23 +342,27 @@ const swapCardsButton = () => {
   document.getElementById('button4').addEventListener('click', swapCard4);
 };
 
-// Display message of player UI & wins or loss
+/**
+ * Display message output in display box - win or loss
+ */
 const displayOutput = () => {
   console.log('display message running');
-  // if (gameState === 'betMode') {
-  //   document.getElementById('messageBox').innerHTML = 'Place your bets on the Bet Station to begin.';
-  // }
   if (didPlayerWin === true) {
     displayMessage.innerHTML = `Congratulations! <br> ${cardWinMessage} <br> You have won ${winAmount} Points! <br> Place your bet to play a new round`;
     displayCredit.innerHTML = `Remaining points:${totalPoints}`;
-  }
-  else {
+  } else {
     document.getElementById('messageBox').innerHTML = 'Unfortunately there are no winning cards. <br> Place your bet to play a new round.';
     displayCredit.innerHTML = `Remaining points:${totalPoints}`;
   }
 };
 
-// Reset variables after end of round and re-enable betRound buttons
+/** ***********************
+ ****** Game flow *******
+ ************************** */
+
+/**
+ * Function to reset variables after end of round and re-enable betRound buttons
+ */
 const resetRound = () => {
   cardDuplicates = '';
   cardSuitsOrder = '';
@@ -311,7 +371,6 @@ const resetRound = () => {
   deck = [];
   playerCards = [];
   cardRankTally = {};
-  didPlayerWin = null;
   cardWinMessage = '';
   // Re-enable bet buttons selection
   document.getElementById('dropdown').disabled = false;
@@ -323,8 +382,10 @@ const resetRound = () => {
   }
 };
 
-// Generate betRound function for ease of call
-const betRound = () => {
+/**
+ * Function to disable and enable required buttons during betting along with bet input validation
+ */
+const gameStart = () => {
   // Disable all swap button and finalize card button
   for (let i = 0; i <= 4; i += 1) {
     document.getElementById(`button${i}`).disabled = true;
@@ -341,62 +402,84 @@ const betRound = () => {
       displayMessage.innerHTML = 'Please select a bet value';
       document.getElementById('submit-button').disabled = true;
     } else if (betAmount > totalPoints) {
-      displayMessage.innerHTML = 'Please select a bet value that\'s less than your remaining points';
+      displayMessage.innerHTML = "Please select a bet value that's less than your remaining points";
       document.getElementById('submit-button').disabled = true;
-      document.getElementById('submit-button')
-        .addEventListener('click', '');
     } else {
-      document.getElementById('submit-button')
+      document
+        .getElementById('submit-button')
         .addEventListener('click', firstRound);
       document.getElementById('submit-button').disabled = false;
     }
   };
-  // Check if bet amount is not more than existing credit before allowing to transit to firstRound
 };
 
-// Switch mode to firstRound after bet mode
+/**
+ * Function enable user to choose selection of cards and update remaining points
+ */
 const firstRound = () => {
-  displayMessage.innerHTML = 'Swap and finalize your cards above <br> ';
-  // Less betAmount from remaing points and update display
-  totalPoints -= betAmount;
-  document.getElementById('total-credit').innerHTML = `Remaining points:${totalPoints}`;
+  if (betAmount <= totalPoints) {
+    playCoinSounds();
+    
+    displayMessage.innerHTML = 'Swap and finalize your cards above <br> ';
+    // Less betAmount from remaing points and update display
+    totalPoints -= betAmount;
+    document.getElementById(
+      'total-credit',
+    ).innerHTML = `Remaining points:${totalPoints}`;
 
-  // Disable submit-button
-  document.getElementById('submit-button').disabled = true;
+    // Disable submit-button
+    document.getElementById('submit-button').disabled = true;
 
-  // Disable bet buttons selection
-  document.getElementById('dropdown').disabled = true;
-  document.getElementById('final-button').disabled = true;
+    // Disable bet buttons selection
+    document.getElementById('dropdown').disabled = true;
+    document.getElementById('final-button').disabled = true;
 
-  // Switch game to round 1
-  gameState = 'round1';
-  // Generate play cards for hand and display card image
-  deck = shuffleCards(makeDeck());
-  generatePlayerCards();
-  pushCardImage(playerCards);
+    // Switch game to round 1
+    gameState = 'round1';
+    // Generate play cards for hand and display card image
+    deck = shuffleCards(makeDeck());
+    generatePlayerCards();
+    pushCardImage(playerCards);
 
-  // Re-enabling all swap and finalize button during subsequent play
-  for (let i = 0; i <= 4; i += 1) {
-    document.getElementById(`button${i}`).disabled = false;
+    // Re-enabling all swap and finalize button during subsequent play
+    for (let i = 0; i <= 4; i += 1) {
+      document.getElementById(`button${i}`).disabled = false;
+    }
+    document.getElementById('final-button').disabled = false;
+    // add the swap card functionality to the swap card button
+    swapCardsButton();
+
+    document
+      .getElementById('final-button')
+      .addEventListener('click', finalShowdown);
+  } else {
+    displayMessage.innerHTML = "Please select a bet value that's less than your remaining points";
+    document.getElementById('submit-button').disabled = true;
   }
-  document.getElementById('final-button').disabled = false;
-  // add the swap card functionality to the swap card button
-  swapCardsButton();
-
-  document
-    .getElementById('final-button')
-    .addEventListener('click', finalShowdown);
 };
 
+/**
+ * Function compare player hands with the winning condition. Reset game for next round
+ */
 const finalShowdown = () => {
   gameState = 'showdown';
   // Disable all swap button to lock in cards
   for (let i = 0; i <= 4; i += 1) {
     document.getElementById(`button${i}`).disabled = true;
   }
+  // Display revised card hands
+  pushCardImage(playerCards);
+
   // Run function to tally cards against win condition
   tallyCards(playerCards);
   calcHand(cardDuplicates, cardSuitsOrder, cardRankOrder);
+
+  // Play sound based on didPlayerWin condition
+  if (didPlayerWin === true) {
+    playWinSounds();
+  } else {
+    playLossSounds();
+  }
 
   // Reset variables for next game
   resetRound();
@@ -409,33 +492,20 @@ const finalShowdown = () => {
     document.getElementById('submit-button').disabled = true;
     document.getElementById('final-button').disabled = true;
   } else {
-  // Re-initialize betting stage for next round
+    // Re-initialize betting stage for next round
     gameState = 'betMode';
-    betRound();
-  }
-};
-
-/** ***********************
- ****** Game flow *******
- ************************** */
-const gameStart = () => {
-  if (gameState === 'betMode') {
-    betRound();
+    gameStart();
   }
 };
 
 /** ***********************
  **** Game logic *****
  ************************** */
-// const playerHand = [
-//   { rank: 1, suit: 'S', name: '8' },
-//   { rank: 13, suit: 'S', name: 'K' },
-//   { rank: 12, suit: 'S', name: 'Q' },
-//   { rank: 10, suit: 'S', name: 'Q' },
-//   { rank: 11, suit: 'S', name: 'K' },
-// ];
 
-// Generate cards order for calcHand comparison
+/**
+ * Tabulate number of repeated cards to compared against win condition
+ * @param {array} playerHand - the cards in player hand
+ */
 const tallyCards = (playerHand) => {
   // Tally card suit order to compare win condition
   const playerHandSuit = playerHand.map((card) => card.suit);
@@ -462,16 +532,19 @@ const tallyCards = (playerHand) => {
   cardRankOrder = Object.values(playerHandRank).toString();
 };
 
-const calcHand = (cardDuplicates, cardSuitsOrder, cardRankOrder) => {
+/**
+ * compare playerHand against win condition of game
+ */
+const calcHand = () => {
   gameState = 'betMode';
-  console.log(playerCards);
-  console.log(cardDuplicates);
-  console.log(cardSuitsOrder);
-  console.log(cardRankOrder);
+  // console.log(playerCards);
+  // console.log(cardDuplicates);
+  // console.log(cardSuitsOrder);
+  // console.log(cardRankOrder);
   if (cardDuplicates === '4,1' || cardDuplicates === '1,4') {
     console.log('fours of a kind');
     didPlayerWin = true;
-    cardWinMessage = 'It\'s a 4 of a Kind!';
+    cardWinMessage = "It's a 4 of a Kind!";
     winAmount = betAmount * 30;
     totalPoints += winAmount + betAmount;
     displayOutput();
@@ -482,14 +555,14 @@ const calcHand = (cardDuplicates, cardSuitsOrder, cardRankOrder) => {
   ) {
     console.log('three of a kinds');
     didPlayerWin = true;
-    cardWinMessage = 'It\'s a 3 of a Kind!';
+    cardWinMessage = "It's a 3 of a Kind!";
     winAmount = betAmount * 3;
     totalPoints += winAmount + betAmount;
     displayOutput();
   } else if (cardDuplicates === '3,2' || cardDuplicates === '2,3') {
     console.log('full house');
     didPlayerWin = true;
-    cardWinMessage = 'It\'s a full house!';
+    cardWinMessage = "It's a full house!";
     winAmount = betAmount * 6;
     totalPoints += winAmount + betAmount;
     displayOutput();
@@ -500,7 +573,7 @@ const calcHand = (cardDuplicates, cardSuitsOrder, cardRankOrder) => {
   ) {
     console.log('two pairs');
     didPlayerWin = true;
-    cardWinMessage = 'It\'s 2 Pairs!';
+    cardWinMessage = "It's 2 Pairs!";
     winAmount = betAmount * 2;
     totalPoints += winAmount + betAmount;
     displayOutput();
@@ -518,10 +591,13 @@ const calcHand = (cardDuplicates, cardSuitsOrder, cardRankOrder) => {
     ) {
       console.log('one pairs');
       didPlayerWin = true;
-      cardWinMessage = 'It\'s a Pair (J Or Better)!';
+      cardWinMessage = "It's a Pair (J Or Better)!";
       winAmount = betAmount;
       totalPoints += winAmount + betAmount;
       displayOutput();
+      console.log(cardDuplicates);
+      console.log(cardSuitsOrder);
+      console.log(cardRankOrder);
     } else {
       console.log('Pair but less than J');
       didPlayerWin = false;
@@ -548,15 +624,15 @@ const calcHand = (cardDuplicates, cardSuitsOrder, cardRankOrder) => {
     ) {
       console.log('straight flush');
       didPlayerWin = true;
-      cardWinMessage = 'It\'s a Straight Flush!';
+      cardWinMessage = "It's a Straight Flush!";
       winAmount = betAmount * 50;
       totalPoints += winAmount + betAmount;
       displayOutput();
     } else if (cardRankOrder === '1,10,11,12,13') {
       console.log('royal flush');
       didPlayerWin = true;
-      cardWinMessage = 'It\'s a Royal Flush!!!!';
-      if (betAmount == 5) {
+      cardWinMessage = "It's a Royal Flush!!!!";
+      if (betAmount === 5) {
         winAmount = betAmount * 800;
         totalPoints += winAmount + betAmount;
         displayOutput();
@@ -568,7 +644,7 @@ const calcHand = (cardDuplicates, cardSuitsOrder, cardRankOrder) => {
     } else {
       console.log('flush');
       didPlayerWin = true;
-      cardWinMessage = 'It\'s a Flush!';
+      cardWinMessage = "It's a Flush!";
       winAmount = betAmount * 5;
       totalPoints += winAmount + betAmount;
       displayOutput();
@@ -587,7 +663,7 @@ const calcHand = (cardDuplicates, cardSuitsOrder, cardRankOrder) => {
   ) {
     console.log('straight');
     didPlayerWin = true;
-    cardWinMessage = 'It\'s a Straight!';
+    cardWinMessage = "It's a Straight!";
     winAmount = betAmount * 4;
     totalPoints += winAmount + betAmount;
     displayOutput();
@@ -602,10 +678,9 @@ const calcHand = (cardDuplicates, cardSuitsOrder, cardRankOrder) => {
 /** *******************
  **** Game INIT ******
  ********************* */
-
 gameInit = () => {
   createGameBoard();
-  gameStart();
+  gameStart();  
 };
 
 gameInit();

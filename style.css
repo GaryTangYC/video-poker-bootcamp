@@ -2,37 +2,94 @@ body {
   background-color: rgba(78, 106, 84);
 }
 
+h1 {
+  color: red;
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+h2 {
+  color: gold;
+  text-align: center;
+  margin-block-start: 0.2em;
+  margin-block-end: 0.2em;
+}
+
 #parent {
   padding: 10px;
-  background: #999;
-  max-width:100%;
-  max-height:100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .child1 {
-  background: #ccc;
-  object-fit: cover;
-  margin: 20px;
-  max-width:100%;
-  max-height:100%;
+  object-fit: fill;
+  margin: 5px;
+  max-width: 100%;
+  max-height: 100%;
+  align-content: center;
+  display: flex;
+  justify-content: center;
+}
+
+.displayDiv {
+  justify-content: center;
+  margin: 0px;
+  max-width: 100%;
+  max-height: 100%;
+  background: #8dbf97;
 }
 
 .child2 {
-  background: #ccc;
-  height: 200px;
+  background: #8dbf97;
+  height: 300px;
   margin: 20px;
-  display: flex;
-  flex-flow: column wrap;
+  margin-bottom: 0px;
 }
 
 .child3 {
-  background: #ccc;
+  background: #6d9476;
   height: 200px;
-  margin: 20px;
+  margin: 20px auto;
+  width: 60%;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-around;
-  align-content: center
+  align-content: center;
+  color: white;
+}
+
+.betTitleBox {
+  flex: 1;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-content: center;
+  padding: 20px;
+  border: solid 1px white;
+  text-align: center;
+  font-size: 110%;
+}
+
+.creditBox {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 80%;
+}
+
+.displayBox {
+  flex: 2;
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  border: solid 1px white;
+}
+
+p {
+  text-align: center;
+  align-items: center;
+}
+
+#messageBox {
+  color: rgb(white);
 }
 
 .button-layout {
@@ -42,9 +99,9 @@ body {
 
 .finalize-layout {
   display: flex;
-  justify-content: center
+  justify-content: center;
+  margin-top: 20px;
 }
-
 
 .card-layout {
   display: flex;
@@ -55,60 +112,138 @@ body {
   margin: 10px;
   padding: 10px;
   background-color: whitesmoke;
-  width: 50px;
-  height: 100px;
+  width: 75px;
+  height: 150px;
   text-align: center;
   border-radius: 8px;
   display: inline-block;
 }
 
-
-/*Swap button config */
-.swap-button {
-  display:inline-block;
-  padding:0.3em 1.2em;
-  margin:0 0.1em 0.1em 0;
-  border:0.16em solid rgba(224, 204, 24, 0.863);
-  border-radius:2em;
+.final-button {
+  color: rgb(255, 215, 0);
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.1em 0.1em 0;
+  border: 0.16em solid rgba(224, 204, 24, 0.863);
+  border-radius: 2em;
   box-sizing: border-box;
-  text-decoration:none;
-  font-family:sans-serif;
-  font-weight:300;
-  color:#c9d133;
-  text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
-  text-align:center;
+  text-decoration: none;
+  font-family: sans-serif;
+  font-weight: 600;
+  color: rgb(255, 215, 0);
+  text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
+  text-align: center;
   transition: all 0.2s;
 }
 
-.swap-button:hover{
+.betContainer {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.submit-button {
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.1em 0.1em 0;
+  border: 0.16em solid rgba(224, 204, 24, 0.863);
+  border-radius: 2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: sans-serif;
+  font-weight: 600;
+  color: rgb(255, 215, 0);
+  text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.option {
+  text-align-last: right;
+}
+
+#dropdown {
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.1em 0.1em 0;
+  border: 0.16em solid rgba(224, 204, 24, 0.863);
+  border-radius: 2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: sans-serif;
+  font-weight: 600;
+  color: rgb(255, 215, 0);
+  text-shadow: 0 0.04em 0.04em rgba(85, 83, 83, 0.35);
+  text-align: center;
+  transition: all 0.2s;
+}
+
+/*Swap button config */
+.swap-button {
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.1em 0.1em 0;
+  border: 0.16em solid rgba(224, 204, 24, 0.863);
+  border-radius: 2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: sans-serif;
+  font-weight: 600;
+  color: rgb(255, 215, 0);
+  text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.swap-button:disabled {
+  background-color: black;
+  color: black;
+}
+
+.final-button:disabled {
+  background-color: black;
+  color: black;
+}
+
+.swap-button:hover {
   border-color: rgb(172, 46, 46);
 }
 
-@media all and (max-width:30em){
-  swap-button{
-  display: block;
-  margin: 0.2em auto;
+.final-button:hover {
+  border-color: rgb(172, 46, 46);
+  font-size: 15px;
+}
+
+@media all and (max-width: 30em) {
+  swap-button {
+    display: block;
+    margin: 0.2em auto;
   }
 
-/*Swap button config end */
+  final-button {
+    display: block;
+    margin: 0.2em auto;
+  }
 
-.suit {
-  margin: 5px;
-  font-size: 30px;
-}
+  /*Swap button config end */
 
-.name {
-  margin: 5px;
-  font-size: 30px;
-  font-weight: bold;
-  font-family: sans-serif;
-}
+  .suit {
+    margin: 5px;
+    font-size: 30px;
+  }
 
-.red {
-  color: red;
-}
+  .name {
+    margin: 5px;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: sans-serif;
+  }
 
-.displayBox {
-  padding: 1px;
-  border: 1px solid black;
+  .red {
+    color: red;
+  }
+
+  .displayBox {
+    padding: 1px;
+    border: 1px solid black;
+  }
 }

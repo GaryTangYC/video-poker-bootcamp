@@ -3,12 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Video Poker</title>
     <link rel="stylesheet" href="style.css" />
 </head>
-<h1>Video Poker!!!!!</h1>
+<h1>Ka-Ching $$$ Poker</h1>
 <body>
+    <audio id="background_audio" autoplay="true" loop="loop">
+        <source src="sounds/GOG.wav">
+    </audio>
+    <!-- <button onClick="playMyAudio()">Play Audio</button> -->
+    <audio id="coin_audio">
+        <source src="sounds/coin.wav">
+    </audio>
+        <audio id="win_audio">
+        <source src="sounds/win.wav">
+    </audio>
+    </audio>
+        <audio id="loss_audio">
+        <source src="sounds/loss.wav">
+    </audio>
+    <script>
+        function playMyAudio() {
+            document.getElementById("background_audio").play();
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
